@@ -151,6 +151,8 @@ echo "Done!
 Manager user: $USERNAME
 Manager password: $PASSWORD
 SFTP password: $SFTPPASS
-Mysql password: $MYSQLPASS" > /var/www/$USERNAME/pass.txt
+MySql user: $USERNAME
+MySql database: $USERNAME
+MySql password: $MYSQLPASS" > /var/www/$USERNAME/pass.txt
  
 cat /var/www/$USERNAME/pass.txt
