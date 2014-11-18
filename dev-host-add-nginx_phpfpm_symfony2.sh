@@ -24,7 +24,7 @@ read DOMAIN
 ##############
 
 echo "Creating user and home directory..."
-useradd $USERNAME -m -G sftp -d "/var/www/$USERNAME"
+useradd $USERNAME -m -G sftp -s "/bin/bash" -d "/var/www/$USERNAME"
 if [ "$?" -ne 0 ]; then
 	echo "Can't add user"
 	exit 2
@@ -43,7 +43,6 @@ mkdir /var/www/$USERNAME/log
 
 chmod -R 755 /var/www/$USERNAME/
 chown -R $USERNAME:$USERNAME /var/www/$USERNAME/
-chown root:root /var/www/$USERNAME
  
 echo "Creating vhost file"
 echo "upstream backend-$USERNAME {server unix:/var/run/php5-$USERNAME.sock;}
