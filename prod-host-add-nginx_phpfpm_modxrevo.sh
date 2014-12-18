@@ -37,7 +37,6 @@ rm ./tmp
 ##############
  
 mkdir /var/www/$USERNAME/www
-mkdir /var/www/$USERNAME/www/web
 mkdir /var/www/$USERNAME/tmp
 mkdir /var/www/$USERNAME/log
 
@@ -50,13 +49,13 @@ echo "upstream backend-$USERNAME {server unix:/var/run/php5-$USERNAME.sock;}
 server {
         listen 80;
         server_name $DOMAIN www.$DOMAIN;
-        root				/var/www/$USERNAME/www/web;
+        root				/var/www/$USERNAME/www;
         index index.php;
 	    access_log			/var/www/$USERNAME/log/access.log;
 	    error_log			/var/www/$USERNAME/log/error.log;
         client_max_body_size 100M;
         location / {
-                root	/var/www/$USERNAME/www/web;
+                root	/var/www/$USERNAME/www;
                 if (!-e $request_filename) {
                         rewrite ^/(.*)$ /index.php?q=$1 last;
                 }
