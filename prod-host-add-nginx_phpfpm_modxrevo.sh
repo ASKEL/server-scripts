@@ -56,19 +56,19 @@ server {
         client_max_body_size 100M;
         location / {
                 root	/var/www/$USERNAME/www;
-                if (!-e $request_filename) {
-                        rewrite ^/(.*)$ /index.php?q=$1 last;
+                if (!-e \$request_filename) {
+                        rewrite ^/(.*)\$ /index.php?q=\$1 last;
                 }
         }
-        location ~ \.php$ {
-                try_files $uri =404;
-                fastcgi_split_path_info ^(.+\.php)(.*)$;
+        location ~ \.php\$ {
+                try_files \$uri =404;
+                fastcgi_split_path_info ^(.+\.php)(.*)\$;
                 fastcgi_pass backend-$USERNAME;
                 fastcgi_index  index.php;
-                fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+                fastcgi_param  SCRIPT_FILENAME  \$document_root\$fastcgi_script_name;
                 include fastcgi_params;
                 fastcgi_ignore_client_abort on;
-                fastcgi_param  SERVER_NAME $http_host;
+                fastcgi_param  SERVER_NAME \$http_host;
         }
 
         location ~ /\.ht {
