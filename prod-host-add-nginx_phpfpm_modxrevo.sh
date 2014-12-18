@@ -46,43 +46,35 @@ chown -R $USERNAME:$USERNAME /var/www/$USERNAME/
  
 echo "Creating vhost file"
 echo "upstream backend-$USERNAME {server unix:/var/run/php5-$USERNAME.sock;}
- 
+
 server {
-	listen				80;
-	server_name			$DOMAIN www.$DOMAIN;
-	root				/var/www/$USERNAME/www/web;
-	access_log			/var/www/$USERNAME/log/access.log;
-	error_log			/var/www/$USERNAME/log/error.log;
+        listen 80;
+        server_name $DOMAIN www.$DOMAIN;
+        root				/var/www/$USERNAME/www/web;
+        index index.php;
+	    access_log			/var/www/$USERNAME/log/access.log;
+	    error_log			/var/www/$USERNAME/log/error.log;
+        client_max_body_size 100M;
+        location / {
+                root	/var/www/$USERNAME/www/web;
+                if (!-e $request_filename) {
+                        rewrite ^/(.*)$ /index.php?q=$1 last;
+                }
+        }
+        location ~ \.php$ {
+                try_files $uri =404;
+                fastcgi_split_path_info ^(.+\.php)(.*)$;
+                fastcgi_pass backend-$USERNAME;
+                fastcgi_index  index.php;
+                fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+                include fastcgi_params;
+                fastcgi_ignore_client_abort on;
+                fastcgi_param  SERVER_NAME $http_host;
+        }
 
-	# try to serve file directly, fallback to app.php
-	location / {        
-        try_files \$uri /app.php\$is_args\$args;
-    }
-    
-    # DEV
-    # This rule should only be placed on your development environment
-    # In production, don't include this and don't deploy app_dev.php or config.php
-    location ~ ^/(app_dev|config)\.php(/|\$) {
-        fastcgi_pass backend-$USERNAME;
-        fastcgi_split_path_info ^(.+\.php)(/.*)\$;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-        fastcgi_param HTTPS off;
-    }
-    # PROD
-    location ~ ^/app\.php(/|\$) {
-        fastcgi_pass backend-$USERNAME;
-        fastcgi_split_path_info ^(.+\.php)(/.*)\$;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-        fastcgi_param HTTPS off;
-        # Prevents URIs that include the front controller. This will 404:
-        # http://domain.tld/app.php/some-path
-        # Remove the internal directive to allow URIs like this
-        internal;
-    }
-	
-
+        location ~ /\.ht {
+                deny  all;
+        }
 }
 " > /etc/nginx/sites-available/$USERNAME.conf
 ln -s /etc/nginx/sites-available/$USERNAME.conf /etc/nginx/sites-enabled/$USERNAME.conf
@@ -112,9 +104,7 @@ php_admin_value[session.gc_divisor] = 100
 php_admin_flag[log_errors] = on
 php_admin_value[error_log] = /var/www/$USERNAME/log/fpm-php.log
 php_admin_value[error_reporting] = E_ALL & ~E_NOTICE
-php_flag[display_errors] = on
-
-
+php_flag[display_errors] = off
 
 pm = dynamic
 pm.max_children = 10
