@@ -40,6 +40,7 @@ mkdir /var/www/$USERNAME/www
 mkdir /var/www/$USERNAME/www/web
 mkdir /var/www/$USERNAME/tmp
 mkdir /var/www/$USERNAME/log
+mkdir /var/www/$USERNAME/build
 
 chmod -R 755 /var/www/$USERNAME/
 chown -R $USERNAME:$USERNAME /var/www/$USERNAME/
@@ -102,7 +103,6 @@ php_admin_value[upload_tmp_dir] = /var/www/$USERNAME/tmp
 php_admin_value[soap.wsdl_cache_dir] = /var/www/$USERNAME/tmp
 php_admin_value[upload_max_filesize] = 100M
 php_admin_value[post_max_size] = 100M
-php_admin_value[open_basedir] = /var/www/$USERNAME/
 php_admin_value[disable_functions] = exec,passthru,shell_exec,system,proc_open,popen,curl_multi_exec,parse_ini_file,show_source,stream_socket_client,stream_set_write_buffer,stream_socket_sendto,highlight_file,com_load_typelib
 php_admin_value[cgi.fix_pathinfo] = 0
 php_admin_value[date.timezone]= 'Europe/Moscow'
@@ -158,6 +158,7 @@ chmod +x /var/www/$USERNAME/chmod
 echo "Done!
 Manager user: $USERNAME
 Manager password: $PASSWORD
+Sftp: $SFTPPASS
 
 MySql user: $USERNAME
 MySql database: $USERNAME
