@@ -145,7 +145,8 @@ find \"/var/www/$USERNAME/www\" -type f -exec chmod 0644 '{}' \;
 chmod +x /var/www/$USERNAME/chmod
  
 echo "Done!
-Manager user: $USERNAME
+Username: $USERNAME
+SSH: $SFTPPASS
 Manager password: $PASSWORD
 
 MySql user: $USERNAME
